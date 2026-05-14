@@ -25,7 +25,7 @@ st.markdown("""
         background-color: #ffffff;
     }
     </style>
-    """, unsafe_allow_config=True)
+    """, unsafe_allow_html=True)
 
 # Yan Menu (Sidebar)
 with st.sidebar:
