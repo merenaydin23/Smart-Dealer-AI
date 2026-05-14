@@ -9,7 +9,7 @@ load_dotenv(find_dotenv())
 # --- YAPILANDIRMA ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # Groq üzerindeki en güçlü model Llama-3 (Türkçe desteği çok iyidir)
-MODEL_ID = "llama3-8b-8192"
+MODEL_ID = "llama-3.3-70b-versatile"
 
 # Groq İstemcisini Başlat
 client = Groq(api_key=GROQ_API_KEY)
