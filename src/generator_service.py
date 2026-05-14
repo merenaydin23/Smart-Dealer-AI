@@ -1,10 +1,10 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from groq import Groq
 from retriever_service import bilgi_getir
 
-# .env dosyasındaki değişkenleri yükle
-load_dotenv()
+# .env dosyasını otomatik bul ve yükle
+load_dotenv(find_dotenv())
 
 # --- YAPILANDIRMA ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
