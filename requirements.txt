@@ -7,3 +7,4 @@ pypdf
 sentence-transformers
 requests
 python-dotenv
+groq

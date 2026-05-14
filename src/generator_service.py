@@ -1,31 +1,35 @@
-import requests
 import os
 from dotenv import load_dotenv
+from groq import Groq
 from retriever_service import bilgi_getir
 
 # .env dosyasındaki değişkenleri yükle
 load_dotenv()
 
 # --- YAPILANDIRMA ---
-HF_TOKEN = os.getenv("HF_TOKEN")
-MODEL_ID = "google/gemma-2-9b-it"
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL_ID}"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# Groq üzerindeki en güçlü model Llama-3 (Türkçe desteği çok iyidir)
+MODEL_ID = "llama3-8b-8192"
+
+# Groq İstemcisini Başlat
+client = Groq(api_key=GROQ_API_KEY)
 
 def cevap_uret(soru):
     """
-    Retriever'dan gelen verileri alır ve Hugging Face API kullanarak 
+    Retriever'dan gelen verileri alır ve Groq API kullanarak 
     anlamlı bir cevap üretir.
     """
-    # 1. Bilgi Getirme (Retrieval)
-    ilgili_dokumanlar = bilgi_getir(soru)
-    
-    # 2. Bağlam Oluşturma
-    baglam = ""
-    for i, doc in enumerate(ilgili_dokumanlar):
-        baglam += f"\n[Kaynak {i+1}]: {doc.page_content}\n"
-    
-    # 3. Prompt (Komut) Hazırlama
-    prompt = f"""Sen yardımcı bir SAP uzmanısın. 
+    try:
+        # 1. Bilgi Getirme (Retrieval)
+        ilgili_dokumanlar = bilgi_getir(soru)
+        
+        # 2. Bağlam Oluşturma
+        baglam = ""
+        for i, doc in enumerate(ilgili_dokumanlar):
+            baglam += f"\n[Kaynak {i+1}]: {doc.page_content}\n"
+        
+        # 3. Prompt (Komut) Hazırlama
+        prompt = f"""Sen yardımcı bir SAP uzmanısın. 
 Aşağıdaki dokümanları (KAYNAKLAR) temel alarak kullanıcının sorusunu cevapla.
 Eğer cevap dokümanlarda yoksa uydurma, 'Bu bilgiye sahip değilim' de.
 
@@ -36,37 +40,34 @@ SORU: {soru}
 
 CEVAP:"""
 
-    # 4. API İsteği
-    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-    payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 512,
-            "temperature": 0.5,
-            "return_full_text": False
-        }
-    }
+        # 4. Groq API İsteği
+        print("🤖 Groq (Llama-3) cevap üretiyor...")
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model=MODEL_ID,
+            temperature=0.5,
+            max_tokens=1024,
+        )
 
-    try:
-        print("🤖 Model cevap üretiyor...")
-        response = requests.post(API_URL, headers=headers, json=payload)
-        response.raise_for_status()
-        
-        result = response.json()
-        # API bazen liste döner
-        if isinstance(result, list):
-            return result[0]['generated_text'].strip()
-        return result['generated_text'].strip()
+        return chat_completion.choices[0].message.content
         
     except Exception as e:
         return f"❌ Hata: {str(e)}"
 
 if __name__ == "__main__":
-    print("--- SAP AKILLI ASİSTAN ---")
-    while True:
-        soru = input("\nSoru (Çıkış için 'q'): ")
-        if soru.lower() == 'q':
-            break
-            
-        cevap = cevap_uret(soru)
-        print(f"\nAI CEVABI:\n{cevap}")
+    print("--- SAP AKILLI ASİSTAN (GROQ POWERED) ---")
+    if not GROQ_API_KEY:
+        print("⚠️ HATA: .env dosyasında GROQ_API_KEY bulunamadı!")
+    else:
+        while True:
+            soru = input("\nSoru (Çıkış için 'q'): ")
+            if soru.lower() == 'q':
+                break
+                
+            cevap = cevap_uret(soru)
+            print(f"\nAI CEVABI:\n{cevap}")
