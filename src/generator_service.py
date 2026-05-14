@@ -1,11 +1,13 @@
 import requests
 import os
+from dotenv import load_dotenv
 from retriever_service import bilgi_getir
 
+# .env dosyasındaki değişkenleri yükle
+load_dotenv()
+
 # --- YAPILANDIRMA ---
-# NOT: Güvenlik için gerçek projelerde token .env dosyasında tutulmalıdır.
-# Şimdilik buraya yazabilirsin veya boş bırakıp kullanıcıdan isteyebilirsin.
-HF_TOKEN = "HF_TOKEN_BURAYA" 
+HF_TOKEN = os.getenv("HF_TOKEN")
 MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.2"
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL_ID}"
 
