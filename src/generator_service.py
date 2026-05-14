@@ -44,8 +44,7 @@ def giris_mesaji():
     print("   SMART DEALER AI | SAP Akilli Asistan")
     print("="*55)
     print(f"\n{selam}! Ben Smart Dealer AI, SAP konularinda size")
-    print("yardimci olmak icin buradayim.")
-    print("Cikiş icin 'hayir', 'yok' veya 'q' yazabilirsiniz.\n")
+    print("yardimci olmak icin buradayim.\n")
     print("-"*55)
 
 def cevap_uret(soru):
