@@ -8,7 +8,7 @@ load_dotenv()
 
 # --- YAPILANDIRMA ---
 HF_TOKEN = os.getenv("HF_TOKEN")
-MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.2"
+MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3"
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL_ID}"
 
 def cevap_uret(soru):
