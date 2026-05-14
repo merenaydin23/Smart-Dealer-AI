@@ -1,6 +1,6 @@
 import os
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 # 1. MODEL KATMANI (Embedding Modelini Hazırlayan Fonksiyon)
 def model_yukle():
