@@ -1,4 +1,12 @@
 import os
+import sys
+
+# Windows terminal emoji destegi icin encoding ayari
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
