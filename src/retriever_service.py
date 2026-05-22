@@ -1,12 +1,9 @@
 import os
 import sys
+import logging
 
-# Windows terminal emoji destegi icin encoding ayari
-if sys.stdout.encoding != 'utf-8':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except AttributeError:
-        pass
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
@@ -18,7 +15,7 @@ def model_yukle():
     """HuggingFace uzerinden multilingual embedding modelini baslatir (Hafizada tutar)."""
     global _embeddings
     if _embeddings is None:
-        print("🧠 Embedding modeli ilk kez RAM'e yukleniyor...")
+        logging.info("Embedding modeli ilk kez RAM'e yukleniyor...")
         model_adi = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
         _embeddings = HuggingFaceEmbeddings(model_name=model_adi)
     return _embeddings
@@ -27,7 +24,7 @@ def veritabani_bagla(embeddings):
     """Diskteki ChromaDB'ye baglanir (Baglantiyi hafizada tutar)."""
     global _vector_db
     if _vector_db is None:
-        print("💾 Vektor veritabanina baglaniliyor...")
+        logging.info("Vektor veritabanina baglaniliyor...")
         db_yolu = r"C:\Users\HP\Desktop\Smart Dealer AI\Data\Sap_Vector_DB"
         if not os.path.exists(db_yolu):
             raise FileNotFoundError(f"Vektor deposu bulunamadi: {db_yolu}")

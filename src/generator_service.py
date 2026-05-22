@@ -5,17 +5,6 @@ from dotenv import load_dotenv, find_dotenv
 from groq import Groq
 from retriever_service import bilgi_getir
 
-# Windows terminal emoji destegi icin encoding ayari
-if sys.stdout.encoding != 'utf-8':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
-    except AttributeError:
-        # Eski Python surumleri icin alternatif (nadir)
-        import codecs
-        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
-
 # .env dosyasini otomatik bul ve yukle
 load_dotenv(find_dotenv())
 
@@ -103,7 +92,7 @@ CEVAP:"""
         return chat_completion.choices[0].message.content
 
     except Exception as e:
-        return f"Hata: {str(e)}"
+        return f"Hata ({type(e).__name__}): {str(e)}"
 
 def devam_sorusu():
     """Cevaptan sonra baska soru olup olmadigini sorar."""
