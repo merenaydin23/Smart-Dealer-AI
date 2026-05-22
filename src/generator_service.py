@@ -55,7 +55,14 @@ def cevap_uret(soru):
     Retriever'dan gelen verileri alir ve Groq API kullanarak
     anlamli bir cevap uretir.
     """
+    # stdout/stderr'i sustur (Windows + Streamlit Errno 22 onlemi)
+    devnull = open(os.devnull, "w", encoding="utf-8")
+    old_stdout = sys.stdout
+    old_stderr = sys.stderr
     try:
+        sys.stdout = devnull
+        sys.stderr = devnull
+
         # 1. Bilgi Getirme (Retrieval)
         ilgili_dokumanlar = bilgi_getir(soru)
 
@@ -72,7 +79,7 @@ SORU: {soru}
 
 CEVAP:"""
 
-        # 4. Groq API Istegi (Sistem promptu ayri olarak gonderiliyor)
+        # 4. Groq API Istegi
         chat_completion = client.chat.completions.create(
             messages=[
                 {
@@ -93,6 +100,10 @@ CEVAP:"""
 
     except Exception as e:
         return f"Hata ({type(e).__name__}): {str(e)}"
+    finally:
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+        devnull.close()
 
 def devam_sorusu():
     """Cevaptan sonra baska soru olup olmadigini sorar."""
